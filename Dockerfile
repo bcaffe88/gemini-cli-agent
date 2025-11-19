@@ -7,6 +7,9 @@ RUN apt-get update && apt-get install -y \
     git \
     && rm -rf /var/lib/apt/lists/*
 
+# Criar diretório necessário do SSH
+RUN mkdir -p /var/run/sshd
+
 # Instalar Gemini CLI
 RUN pip install --upgrade pip
 RUN pip install google-genai
