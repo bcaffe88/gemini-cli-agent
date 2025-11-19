@@ -1,14 +1,27 @@
-FROM alpine:latest
+FROM python:3.11-slim
 
-RUN apk update && apk add openssh bash
+# Instalar dependências
+RUN apt-get update && apt-get install -y \
+    curl \
+    openssh-server \
+    git \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN adduser -D agent && echo "agent:agent123" | chpasswd
+# Instalar Gemini CLI
+RUN pip install --upgrade pip
+RUN pip install google-genai
 
-RUN mkdir /home/agent/.ssh && chmod 700 /home/agent/.ssh
+# Criar usuário para SSH
+RUN useradd -ms /bin/bash app
 
-COPY start.sh /start.sh
-RUN chmod +x /start.sh
+# Criar pastas e permissões
+RUN mkdir /home/app/.ssh && chmod 700 /home/app/.ssh
+
+# Copiar app
+WORKDIR /app
+COPY . .
+
+RUN chmod +x start.sh
 
 EXPOSE 22
-
-CMD ["/start.sh"]
+CMD ["/app/start.sh"]
