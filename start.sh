@@ -1,15 +1,34 @@
 #!/bin/bash
 set -e
 
-# Start SSH
-service ssh start
+echo "🤖 =========================================="
+echo "🤖 Gemini Autonomous Agent"
+echo "🤖 By CriptoPNZ"
+echo "🤖 =========================================="
 
-# Criar chave para o Gemini (se não existir)
-if [ ! -f "/home/app/.gemini/gemini-config.yaml" ]; then
-    mkdir -p /home/app/.gemini
-    touch /home/app/.gemini/gemini-config.yaml
+# Verificar variáveis de ambiente
+if [ -z "$GITHUB_TOKEN" ]; then
+    echo "⚠️  GITHUB_TOKEN não configurado!"
 fi
 
-echo "🔥 Gemini CLI Agent iniciado!"
-echo "👉 Conecte via SSH para começar a usar."
-sleep infinity
+if [ -z "$GEMINI_API_KEY" ]; then
+    echo "⚠️  GEMINI_API_KEY não configurado!"
+fi
+
+# Criar diretórios necessários
+mkdir -p /app/workspace
+mkdir -p /app/templates
+mkdir -p /app/static
+
+echo ""
+echo "✅ Ambiente configurado"
+echo "🌐 Iniciando servidor web..."
+echo ""
+
+# Iniciar aplicação Flask com Gunicorn
+exec gunicorn --bind 0.0.0.0:${PORT:-8080} \
+              --workers 2 \
+              --timeout 600 \
+              --access-logfile - \
+              --error-logfile - \
+              web_interface:app
