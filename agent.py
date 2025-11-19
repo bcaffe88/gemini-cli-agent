@@ -246,7 +246,7 @@ body { font-family: Arial, sans-serif; padding: 20px; }"""
 3. Pronto!
 
 ---
-💜 Criado com Gemini Agent by CriptoPNZ
+💜 Criado com Gemini Agent by @BCaffé
 """
         
         return code_files
