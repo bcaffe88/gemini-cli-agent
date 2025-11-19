@@ -14,11 +14,13 @@ RUN mkdir -p /var/run/sshd
 RUN pip install --upgrade pip
 RUN pip install google-genai
 
-# Criar usuário para SSH
-RUN useradd -ms /bin/bash app
+# Criar usuário e senha
+RUN useradd -ms /bin/bash app && echo "app:app" | chpasswd
 
-# Criar pastas e permissões
-RUN mkdir /home/app/.ssh && chmod 700 /home/app/.ssh
+# Ajustar SSHD para permitir login
+RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config && \
+    sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config && \
+    sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/' /etc/ssh/sshd_config
 
 # Copiar app
 WORKDIR /app
