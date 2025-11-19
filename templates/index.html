@@ -1,1 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Agent - Criador de Apps Autônomo</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">🤖</span>
+                <h1>Gemini Agent</h1>
+            </div>
+            <p class="tagline">Crie aplicativos completos com IA em segundos</p>
+        </header>
 
+        <!-- Main Form -->
+        <div class="main-card" id="mainForm">
+            <div class="form-header">
+                <h2>✨ Descreva seu projeto</h2>
+                <p>Conte o que você quer criar e deixe a IA fazer o trabalho</p>
+            </div>
+
+            <form id="projectForm">
+                <div class="form-group">
+                    <label for="description">O que você quer criar?</label>
+                    <textarea 
+                        id="description" 
+                        name="description" 
+                        rows="4" 
+                        placeholder="Ex: Um app de delivery de pizzaria com catálogo de produtos, carrinho de compras, cálculo de frete e formulário de pedido"
+                        required
+                    ></textarea>
+                    <div class="char-count">
+                        <span id="charCount">0</span> caracteres
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="projectName">Nome do projeto (URL)</label>
+                    <input 
+                        type="text" 
+                        id="projectName" 
+                        name="projectName" 
+                        placeholder="Ex: pizzaria-express"
+                        pattern="[a-z0-9-]+"
+                        title="Apenas letras minúsculas, números e hífens"
+                        required
+                    />
+                    <small>Será usado como nome do repositório GitHub</small>
+                </div>
+
+                <button type="submit" class="btn-primary" id="submitBtn">
+                    <span class="btn-icon">🚀</span>
+                    Criar Projeto
+                </button>
+            </form>
+
+            <!-- Exemplos -->
+            <div class="examples">
+                <h3>💡 Exemplos de projetos:</h3>
+                <div class="example-cards">
+                    <div class="example-card" onclick="setExample('app de delivery de pizzaria com catálogo, carrinho e checkout', 'pizzaria-delivery')">
+                        <span class="example-icon">🍕</span>
+                        <div>
+                            <strong>App de Delivery</strong>
+                            <p>Cardápio, carrinho, pedidos</p>
+                        </div>
+                    </div>
+                    <div class="example-card" onclick="setExample('landing page moderna para academia com hero section, serviços, preços e formulário de contato', 'academia-landing')">
+                        <span class="example-icon">💪</span>
+                        <div>
+                            <strong>Landing Page</strong>
+                            <p>Academia, serviços, contato</p>
+                        </div>
+                    </div>
+                    <div class="example-card" onclick="setExample('dashboard administrativo com gráficos de vendas, lista de produtos e estatísticas', 'admin-dashboard')">
+                        <span class="example-icon">📊</span>
+                        <div>
+                            <strong>Dashboard Admin</strong>
+                            <p>Gráficos, estatísticas, dados</p>
+                        </div>
+                    </div>
+                    <div class="example-card" onclick="setExample('portfólio pessoal com projetos, sobre mim, skills e contato', 'meu-portfolio')">
+                        <span class="example-icon">💼</span>
+                        <div>
+                            <strong>Portfólio</strong>
+                            <p>Projetos, sobre, contato</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Screen -->
+        <div class="progress-card hidden" id="progressCard">
+            <div class="progress-header">
+                <h2>🔨 Criando seu projeto...</h2>
+                <div class="spinner"></div>
+            </div>
+
+            <div class="progress-steps">
+                <div class="step" data-step="init">
+                    <span class="step-icon">⚡</span>
+                    <span class="step-text">Iniciando</span>
+                </div>
+                <div class="step" data-step="planning">
+                    <span class="step-icon">🧠</span>
+                    <span class="step-text">Planejando arquitetura</span>
+                </div>
+                <div class="step" data-step="generating">
+                    <span class="step-icon">💻</span>
+                    <span class="step-text">Gerando código</span>
+                </div>
+                <div class="step" data-step="repo">
+                    <span class="step-icon">📦</span>
+                    <span class="step-text">Criando repositório</span>
+                </div>
+                <div class="step" data-step="commit">
+                    <span class="step-icon">📂</span>
+                    <span class="step-text">Commitando arquivos</span>
+                </div>
+                <div class="step" data-step="deploy">
+                    <span class="step-icon">🚀</span>
+                    <span class="step-text">Fazendo deploy</span>
+                </div>
+            </div>
+
+            <div class="progress-log" id="progressLog"></div>
+        </div>
+
+        <!-- Success Screen -->
+        <div class="success-card hidden" id="successCard">
+            <div class="success-icon">🎉</div>
+            <h2>Projeto criado com sucesso!</h2>
+            <p class="success-text">Seu aplicativo está pronto e online</p>
+
+            <div class="result-links">
+                <a href="#" id="repoLink" target="_blank" class="result-link">
+                    <span class="link-icon">📦</span>
+                    <div>
+                        <strong>Ver Repositório</strong>
+                        <small>GitHub</small>
+                    </div>
+                </a>
+                <a href="#" id="deployLink" target="_blank" class="result-link result-link-primary">
+                    <span class="link-icon">🌐</span>
+                    <div>
+                        <strong>Abrir Aplicativo</strong>
+                        <small>Online</small>
+                    </div>
+                </a>
+            </div>
+
+            <div class="result-info">
+                <div class="info-item">
+                    <span class="info-label">Arquivos criados:</span>
+                    <span class="info-value" id="filesCount">-</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Nome do projeto:</span>
+                    <span class="info-value" id="projectNameResult">-</span>
+                </div>
+            </div>
+
+            <button onclick="resetForm()" class="btn-secondary">
+                Criar outro projeto
+            </button>
+        </div>
+
+        <!-- Error Screen -->
+        <div class="error-card hidden" id="errorCard">
+            <div class="error-icon">❌</div>
+            <h2>Oops! Algo deu errado</h2>
+            <p class="error-text" id="errorMessage">Erro desconhecido</p>
+            
+            <button onclick="resetForm()" class="btn-secondary">
+                Tentar novamente
+            </button>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Desenvolvido com 💜 por <strong>CriptoPNZ</strong></p>
+            <p class="footer-links">
+                <a href="https://github.com" target="_blank">GitHub</a> • 
+                <a href="#" onclick="checkHealth()">Status do Sistema</a>
+            </p>
+        </footer>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
